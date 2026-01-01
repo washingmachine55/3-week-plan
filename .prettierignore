@@ -1,0 +1,11 @@
+# Don't format these folders
+node_modules
+build
+dist
+public
+./backend/security/*
+
+# Don't format these files
+package*.json
+.env
+.env.example
