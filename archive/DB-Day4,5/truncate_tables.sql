@@ -1,0 +1,17 @@
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE LMS.lutbl_activity_types;
+TRUNCATE TABLE LMS.tbl_activities;
+TRUNCATE TABLE LMS.tbl_addresses;
+TRUNCATE TABLE LMS.tbl_auth_providers;
+TRUNCATE TABLE LMS.tbl_banks;
+TRUNCATE TABLE LMS.tbl_branches;
+TRUNCATE TABLE LMS.tbl_discounts;
+TRUNCATE TABLE LMS.tbl_internal_rules;
+TRUNCATE TABLE LMS.tbl_loan_penlties;
+TRUNCATE TABLE LMS.tbl_loans;
+TRUNCATE TABLE LMS.tbl_product_plans;
+TRUNCATE TABLE LMS.tbl_products;
+TRUNCATE TABLE LMS.tbl_transactions;
+TRUNCATE TABLE LMS.tbl_user_details;
+TRUNCATE TABLE LMS.tbl_users;
+SET FOREIGN_KEY_CHECKS = 1;

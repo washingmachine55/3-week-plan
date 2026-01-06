@@ -3,3 +3,4 @@ node_modules
 ./backend/security/*
 backend/security/localhost+2-key.pem
 backend/security/localhost+2.pem
+archive/__pycache__/faker.cpython-313.pyc
