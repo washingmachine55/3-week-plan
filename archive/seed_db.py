@@ -6,104 +6,117 @@
 import random
 from faker import Faker
 import mysql.connector
+from dotenv import dotenv_values
 from datetime import timedelta
 
 fake = Faker()
+config = dotenv_values('../.env')
 
 # ----------------------------
 # DB CONFIG
 # ----------------------------
 conn = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="testdb123",
-    database="LMS"
+    host=config['APP_HOST'],
+    user=config['APP_USER'],
+    password=config['APP_PASSWORD'],
+    database=config['APP_DATABASE']
 )
-cursor = conn.cursor()
+cursor = conn.cursor(buffered=True)
 
-# ----------------------------
-# HELPERS
-# ----------------------------
 def execute(query, params=None):
     cursor.execute(query, params)
     conn.commit()
     return cursor.lastrowid
 
+cursor.execute("SET FOREIGN_KEY_CHECKS = 0")
 
 # ----------------------------
-# DISABLE FK CHECKS
+# CONSTANTS
 # ----------------------------
-cursor.execute("SET FOREIGN_KEY_CHECKS = 0")
+ACCESS_ADMIN = 1
+ACCESS_STAFF = 2
+ACCESS_CUSTOMER = 3
 
 # ----------------------------
 # ACTIVITY TYPES
 # ----------------------------
-activity_types = ['LOGIN', 'LOAN_CREATE', 'PAYMENT']
-activity_type_ids = []
-
-for name in activity_types:
-    activity_type_ids.append(
-        execute(
-            "INSERT INTO lutbl_activity_types (name, description) VALUES (%s, %s)",
-            (name, fake.sentence())
-        )
-    )
-
-# ----------------------------
-# ADDRESSES
-# ----------------------------
-address_ids = []
-for _ in range(50):
-    address_ids.append(
-        execute(
-            """
-            INSERT INTO tbl_addresses
-            (street_num, street_addr, city, region, zip_code, created_at, status)
-            VALUES (%s,%s,%s,%s,%s,NOW(),1)
-            """,
-            (
-                fake.building_number(),
-                fake.street_name(),
-                fake.city(),
-                fake.state_abbr(),
-                fake.postcode()[:5]
-            )
-        )
+activity_type_ids = {}
+for name in ['LOGIN', 'LOAN_CREATE', 'PAYMENT']:
+    activity_type_ids[name] = execute(
+        "INSERT INTO lutbl_activity_types (name, description) VALUES (%s,%s)",
+        (name, fake.sentence())
     )
 
 # ----------------------------
 # USERS
 # ----------------------------
 user_ids = []
-for i in range(100):
-    user_ids.append(
+admins, staff, customers = [], [], []
+
+TOTAL_USERS = 100
+for i in range(TOTAL_USERS):
+    if i < 5:
+        access = ACCESS_ADMIN
+    elif i < 15:
+        access = ACCESS_STAFF
+    else:
+        access = ACCESS_CUSTOMER
+
+    uid = execute(
+        """
+        INSERT INTO tbl_users
+        (username,email,password_hash,access_type,created_at,created_by,status)
+        VALUES (%s,%s,%s,%s,NOW(),NULL,1)
+        """,
+        (
+            fake.user_name() + str(i),
+            fake.unique.email(),
+            fake.sha256(),
+            access
+        )
+    )
+    user_ids.append(uid)
+
+    if access == ACCESS_ADMIN:
+        admins.append(uid)
+    elif access == ACCESS_STAFF:
+        staff.append(uid)
+    else:
+        customers.append(uid)
+
+# ----------------------------
+# ADDRESSES
+# ----------------------------
+address_ids = []
+for _ in range(60):
+    address_ids.append(
         execute(
             """
-            INSERT INTO tbl_users
-            (username, email, password_hash, access_type, updated_at, status)
-            VALUES (%s,%s,%s,%s,NOW(),1)
+            INSERT INTO tbl_addresses
+            (street_num,street_addr,city,region,zip_code,created_at,created_by,status)
+            VALUES (%s,%s,%s,%s,%s,NOW(),%s,1)
             """,
             (
-                fake.user_name() + str(i),
-                fake.email(),
-                fake.sha256(),
-                random.choice([1, 2])
+                fake.building_number(),
+                fake.street_name(),
+                fake.city(),
+                fake.state_abbr(),
+                fake.postcode()[:5],
+                random.choice(admins + staff)
             )
         )
     )
 
-admin_id = user_ids[0]
-
 # ----------------------------
 # USER DETAILS
 # ----------------------------
-for user_id in user_ids[1:]:
+for user_id in customers:
     execute(
         """
         INSERT INTO tbl_user_details
-        (user_id, kyc_status, first_name, last_name, dob, phone_no, cnic,
-        address_id, created_at, updated_at, status)
-        VALUES (%s,1,%s,%s,%s,%s,%s,%s,NOW(),NOW(),1)
+        (user_id,kyc_status,first_name,last_name,dob,phone_no,cnic,
+        address_id,created_at,created_by,status)
+        VALUES (%s,1,%s,%s,%s,%s,%s,%s,NOW(),%s,1)
         """,
         (
             user_id,
@@ -111,8 +124,9 @@ for user_id in user_ids[1:]:
             fake.last_name(),
             fake.date_of_birth(minimum_age=18, maximum_age=65),
             fake.msisdn()[:11],
-            str(random.randint(10**12, 10**13-1)),
-            random.choice(address_ids)
+            str(random.randint(10**12, 10**13 - 1)),
+            random.choice(address_ids),
+            user_id
         )
     )
 
@@ -120,36 +134,35 @@ for user_id in user_ids[1:]:
 # BANKS
 # ----------------------------
 bank_ids = []
-for _ in range(25):
+for _ in range(10):
     bank_ids.append(
         execute(
             "INSERT INTO tbl_banks (name) VALUES (%s)",
-            (
-                fake.company(),
-            )
+            (fake.company(),)
         )
     )
 
 # ----------------------------
-# BRANCHES
+# BRANCHES (1 MAIN PER BANK)
 # ----------------------------
 branch_ids = []
 for bank_id in bank_ids:
-    for _ in range(6):
+    main_branch_index = random.randint(0, 4)
+    for i in range(5):
         branch_ids.append(
             execute(
                 """
                 INSERT INTO tbl_branches
-                (bank_id, name, code, address_id, is_main, main_email, main_phone)
+                (bank_id,name,code,address_id,is_main,main_email,main_phone)
                 VALUES (%s,%s,%s,%s,%s,%s,%s)
                 """,
                 (
                     bank_id,
                     fake.city() + " Branch",
-                    fake.lexify(text="????"),
+                    fake.lexify("????"),
                     random.choice(address_ids),
-                    fake.boolean(chance_of_getting_true=15),
-                    fake.company_email(),
+                    i == main_branch_index,
+                    fake.unique.company_email(),
                     fake.msisdn()[:11]
                 )
             )
@@ -158,20 +171,23 @@ for bank_id in bank_ids:
 # ----------------------------
 # PRODUCTS
 # ----------------------------
+PRODUCT_NAMES = ["Personal Loan", "Auto Loan", "Home Loan", "Education Loan"]
 product_ids = []
+
 for bank_id in bank_ids:
-    for _ in range(7):
+    for name in PRODUCT_NAMES:
         product_ids.append(
             execute(
                 """
                 INSERT INTO tbl_products
-                (name, description, bank_id, created_at, status)
-                VALUES (%s,%s,%s,NOW(),1)
+                (name,description,bank_id,created_at,created_by,status)
+                VALUES (%s,%s,%s,NOW(),%s,1)
                 """,
                 (
-                    fake.word().title() + " Loan",
-                    fake.text(),
-                    bank_id
+                    name,
+                    fake.text(200),
+                    bank_id,
+                    random.choice(admins + staff)
                 )
             )
         )
@@ -179,112 +195,133 @@ for bank_id in bank_ids:
 # ----------------------------
 # PRODUCT PLANS
 # ----------------------------
-plan_ids = []
+plan_ids = {}
 for product_id in product_ids:
-    for _ in range(3):
-        plan_ids.append(
-            execute(
-                """
-                INSERT INTO tbl_product_plans
-                (product_id, name, description, amount, plan_date, created_at, status)
-                VALUES (%s,%s,%s,%s,%s,NOW(),1)
-                """,
-                (
-                    product_id,
-                    fake.word().title() + " Plan",
-                    fake.text(),
-                    random.randint(10000, 200000),
-                    fake.future_date()
-                )
+    plan_ids[product_id] = []
+    for amount in [25000, 50000, 100000, 200000]:
+        pid = execute(
+            """
+            INSERT INTO tbl_product_plans
+            (product_id,name,description,amount,plan_date,created_at,created_by,status)
+            VALUES (%s,%s,%s,%s,%s,NOW(),%s,1)
+            """,
+            (
+                product_id,
+                f"{amount} PKR Plan",
+                fake.text(150),
+                amount,
+                fake.future_date(),
+                random.choice(admins + staff)
             )
         )
+        plan_ids[product_id].append(pid)
 
 # ----------------------------
 # INTERNAL RULES
 # ----------------------------
 rule_ids = []
-for _ in range(15):
+for name in ["Late Payment", "Missed EMI", "Early Settlement"]:
     rule_ids.append(
         execute(
             """
             INSERT INTO tbl_internal_rules
-            (name, description, created_at, status)
-            VALUES (%s,%s,NOW(),1)
+            (name,description,created_at,created_by,status)
+            VALUES (%s,%s,NOW(),%s,1)
             """,
-            (fake.word().title(), fake.text())
+            (name, fake.text(150), random.choice(admins))
         )
     )
 
 # ----------------------------
-# LOANS
+# LOANS (5–10% OF CUSTOMERS)
 # ----------------------------
 loan_ids = []
-for _ in range(5600):
+borrowers = random.sample(customers, int(len(customers) * 0.08))
+
+for customer_id in borrowers:
+    product_id = random.choice(product_ids)
+    plan_id = random.choice(plan_ids[product_id])
+
+    # plan_amount = cursor.execute(
+    #     "SELECT amount FROM tbl_product_plans WHERE id=%s", (plan_id,)
+    # )
+
+    approved = random.random() < 0.75
+
     loan_ids.append(
         execute(
             """
             INSERT INTO tbl_loans
-            (product_plan_id, customer_id, rules_id, amount,
-            approved, approved_by, due_date, interest_rate, created_at, status)
-            VALUES (%s,%s,%s,%s,1,%s,%s,%s,NOW(),1)
+            (product_plan_id,customer_id,rules_id,amount,approved,
+            approved_by,due_date,interest_rate,created_at,created_by,status)
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,NOW(),%s,1)
             """,
             (
-                random.choice(plan_ids),
-                random.choice(user_ids[1:]),
+                plan_id,
+                customer_id,
                 random.choice(rule_ids),
-                random.randint(20000, 500000),
-                admin_id,
+                random.randint(10000, 200000),
+                approved,
+                random.choice(admins + staff) if approved else None,
                 fake.future_date(),
-                round(random.uniform(5.0, 20.0), 2)
+                round(random.uniform(8.0, 18.0), 2),
+                customer_id
             )
         )
     )
 
 # ----------------------------
-# TRANSACTIONS
+# TRANSACTIONS (ONLY APPROVED LOANS)
 # ----------------------------
-for _ in range(11900):
-    execute(
-        """
-        INSERT INTO tbl_transactions
-        (product_plan_id, user_id, amount, repayment_type,
-        transaction_date, method, status)
-        VALUES (%s,%s,%s,%s,%s,%s,1)
-        """,
-        (
-            random.choice(plan_ids),
-            random.choice(user_ids[1:]),
-            random.randint(1000, 20000),
-            random.randint(1, 3),
-            fake.date_this_year(),
-            random.randint(1, 3)
+for loan_id in loan_ids:
+    cursor.execute("SELECT approved, amount, customer_id, created_at FROM tbl_loans WHERE id=%s", (loan_id,))
+    approved, loan_amount, user_id, created_at = cursor.fetchone()
+    # approved, loan_amount, user_id, created_at = row
+    # row = cursor.fetchone()
+    # cursor.fetchall()
+
+
+    if not approved:
+        continue
+
+    remaining = loan_amount
+    for _ in range(random.choices([1, 2, 3], weights=[60, 30, 10])[0]):
+        payment = min(remaining, random.randint(2000, 10000))
+        remaining -= payment
+
+        execute(
+            """
+            INSERT INTO tbl_transactions
+            (loan_id,user_id,amount,repayment_type,transaction_date,method,is_verified,status)
+            VALUES (%s,%s,%s,1,%s,1,1,1)
+            """,
+            (
+                loan_id,
+                user_id,
+                payment,
+                fake.date_between(start_date=created_at.date(), end_date='today')
+            )
         )
-    )
 
 # ----------------------------
-# ACTIVITIES
+# ACTIVITIES (CAUSAL)
 # ----------------------------
-for _ in range(300):
+for loan_id in loan_ids:
     execute(
         """
         INSERT INTO tbl_activities
-        (actvity_type_id, description, created_by, created_at, updated_by, updated_at)
-        VALUES (%s,%s,%s,NOW(),%s,NOW())
+        (activity_type_id,description,created_by,created_at)
+        VALUES (%s,%s,%s,NOW())
         """,
         (
-            random.choice(activity_type_ids),
-            fake.sentence(),
-            random.choice(user_ids),
-            random.choice(user_ids)
+            activity_type_ids['LOAN_CREATE'],
+            "Loan created",
+            random.choice(admins + staff)
         )
     )
 
-# ----------------------------
-# RE-ENABLE FK CHECKS
-# ----------------------------
 cursor.execute("SET FOREIGN_KEY_CHECKS = 1")
-
 cursor.close()
 conn.close()
 
-print("✅ Database successfully seeded with Faker data!")
+print("✅ Realistic database seeded successfully.")

@@ -50,7 +50,7 @@ INSERT INTO tbl_loans
 VALUES
 (1, 1, 2, 1, 50000.00, TRUE, 1, '2026-12-31', 12.5, NOW(), 1);
 
-INSERT INTO tbl_loan_penlties
+INSERT INTO tbl_loan_penalties
 (rules_id, loan_id, amount, updated_at, status)
 VALUES
 (1, 1, 500.00, NOW(), 1);

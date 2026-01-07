@@ -1,3 +1,4 @@
+-- Active: 1765478296024@@127.0.0.1@3306
 SET FOREIGN_KEY_CHECKS = 0;
 
 CREATE TABLE IF NOT EXISTS tbl_banks (
@@ -98,7 +99,7 @@ CREATE TABLE IF NOT EXISTS tbl_loans (
 	FOREIGN KEY (deleted_by) REFERENCES tbl_users(id)
 );
 
-CREATE TABLE IF NOT EXISTS tbl_loan_penlties (
+CREATE TABLE IF NOT EXISTS tbl_loan_penalties (
 	id INT(11) AUTO_INCREMENT PRIMARY KEY,
 	rules_id INT(11),
 	loan_id INT(11),
@@ -176,13 +177,13 @@ CREATE TABLE IF NOT EXISTS tbl_user_details (
 
 CREATE TABLE IF NOT EXISTS tbl_activities (
 	id INT(11) AUTO_INCREMENT PRIMARY KEY,
-	actvity_type_id INT(11),
+	activity_type_id INT(11),
 	description VARCHAR(1000) DEFAULT NULL,
 	created_by INT(11),
 	created_at TIMESTAMP NOT NULL,
 	updated_by INT(11),
 	updated_at TIMESTAMP DEFAULT NULL,
-	FOREIGN KEY (actvity_type_id) REFERENCES lutbl_activity_types(id),
+	FOREIGN KEY (activity_type_id) REFERENCES lutbl_activity_types(id),
 	FOREIGN KEY (created_by) REFERENCES tbl_users(id),
 	FOREIGN KEY (updated_by) REFERENCES tbl_users(id)
 );
@@ -209,7 +210,7 @@ CREATE TABLE IF NOT EXISTS tbl_addresses (
 
 CREATE TABLE IF NOT EXISTS tbl_transactions (
 	id INT(11) AUTO_INCREMENT PRIMARY KEY,
-	product_plan_id INT(11),
+	loan_id INT(11),
 	user_id INT(11),
 	amount DECIMAL(10,2) NOT NULL,
 	repayment_type TINYINT,
@@ -217,7 +218,7 @@ CREATE TABLE IF NOT EXISTS tbl_transactions (
 	method TINYINT NOT NULL,
 	is_verified BOOLEAN DEFAULT FALSE,
 	status TINYINT,
-	FOREIGN KEY (product_plan_id) REFERENCES tbl_product_plans(id),
+	FOREIGN KEY (loan_id) REFERENCES tbl_loans(id),
 	FOREIGN KEY (user_id) REFERENCES tbl_users(id)
 );
 

@@ -7,7 +7,7 @@ TRUNCATE TABLE LMS.tbl_banks;
 TRUNCATE TABLE LMS.tbl_branches;
 TRUNCATE TABLE LMS.tbl_discounts;
 TRUNCATE TABLE LMS.tbl_internal_rules;
-TRUNCATE TABLE LMS.tbl_loan_penlties;
+TRUNCATE TABLE LMS.tbl_loan_penalties;
 TRUNCATE TABLE LMS.tbl_loans;
 TRUNCATE TABLE LMS.tbl_product_plans;
 TRUNCATE TABLE LMS.tbl_products;
