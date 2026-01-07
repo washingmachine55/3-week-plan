@@ -3,6 +3,6 @@
 	"prettier.configPath": ".prettierrc",
 	"editor.formatOnSave": true,
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
-	"cSpell.words": ["VARCHAR"],
+	"cSpell.words": ["MONTHNAME", "VARCHAR"],
 	"cSpell.ignoreWords": ["RDBMS", "lutbl"]
 }

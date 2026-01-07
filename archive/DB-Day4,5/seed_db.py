@@ -10,7 +10,7 @@ from dotenv import dotenv_values
 from datetime import timedelta
 
 fake = Faker()
-config = dotenv_values('../.env')
+config = dotenv_values('../../.env')
 
 # ----------------------------
 # DB CONFIG
@@ -174,19 +174,19 @@ for bank_id in bank_ids:
 PRODUCT_NAMES = ["Personal Loan", "Auto Loan", "Home Loan", "Education Loan"]
 product_ids = []
 
-for bank_id in bank_ids:
+for branch_id in branch_ids:
     for name in PRODUCT_NAMES:
         product_ids.append(
             execute(
                 """
                 INSERT INTO tbl_products
-                (name,description,bank_id,created_at,created_by,status)
+                (name,description,branch_id,created_at,created_by,status)
                 VALUES (%s,%s,%s,NOW(),%s,1)
                 """,
                 (
                     name,
                     fake.text(200),
-                    bank_id,
+                    branch_id,
                     random.choice(admins + staff)
                 )
             )
@@ -236,7 +236,7 @@ for name in ["Late Payment", "Missed EMI", "Early Settlement"]:
 # LOANS (5–10% OF CUSTOMERS)
 # ----------------------------
 loan_ids = []
-borrowers = random.sample(customers, int(len(customers) * 0.08))
+borrowers = random.sample(customers, int(len(customers) * 0.35))
 
 for customer_id in borrowers:
     product_id = random.choice(product_ids)

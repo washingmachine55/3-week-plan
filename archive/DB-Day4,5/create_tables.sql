@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS tbl_products (
 	id INT(11) AUTO_INCREMENT PRIMARY KEY,
 	name VARCHAR(255) NOT NULL,
 	description VARCHAR(1000) DEFAULT NULL,
-	bank_id INT(11),
+	branch_id INT(11),
 	created_at TIMESTAMP NOT NULL,
 	created_by INT(11),
 	updated_at TIMESTAMP DEFAULT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS tbl_products (
 	deleted_at TIMESTAMP DEFAULT NULL,
 	deleted_by INT(11),
 	status TINYINT,
-	FOREIGN KEY (bank_id) REFERENCES tbl_banks(id),
+	FOREIGN KEY (branch_id) REFERENCES tbl_branches(id),
 	FOREIGN KEY (created_by) REFERENCES tbl_users(id),
 	FOREIGN KEY (updated_by) REFERENCES tbl_users(id),
 	FOREIGN KEY (deleted_by) REFERENCES tbl_users(id)
