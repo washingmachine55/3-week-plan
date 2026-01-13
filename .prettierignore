@@ -8,4 +8,4 @@ public
 # Don't format these files
 package*.json
 .env
-.env.example
+README.md

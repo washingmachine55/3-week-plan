@@ -70,6 +70,7 @@ CREATE TABLE IF NOT EXISTS addresses(
 
 CREATE TABLE IF NOT EXISTS stores(
 	id UUID PRIMARY KEY NOT NULL DEFAULT uuidv7(),
+	name VARCHAR(55) NOT NULL,
 	addresses_id UUID,
 	timezone CHAR(3) NOT NULL DEFAULT 'PKT',
 	opening_hours TIME NOT NULL DEFAULT make_time(9,0,0),
