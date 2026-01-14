@@ -1,7 +1,7 @@
 import { createNewProduct } from "../services/products/createNewProduct.products.services.js"
-import getAll from "../services/products/getAll.products.services.js"
+import getAllProducts from "../services/products/getAllProducts.products.services.js"
 
-export async function create(req, res) {
+export async function createProduct(req, res) {
 	try {
 		const queryResult = await createNewProduct(req)
 		if (!queryResult) {
@@ -18,7 +18,7 @@ export async function create(req, res) {
 }
 export async function read(req, res) {
 	try {
-		const queryResult = await getAll(req)
+		const queryResult = await getAllProducts(req)
 
 		res.json({
 			status: 200,

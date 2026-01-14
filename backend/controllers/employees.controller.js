@@ -1,7 +1,11 @@
+import createNewEmployee from "../services/employees/createNew.employees.services.js"
+
 export async function create(req, res) {
 	try {
+		const result = await createNewEmployee(req)
 		res.json({
 			status: 200,
+			message: result
 		})
 	} catch (error) {
 		console.debug(error)

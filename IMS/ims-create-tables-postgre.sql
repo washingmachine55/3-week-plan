@@ -24,10 +24,10 @@ CREATE TABLE IF NOT EXISTS categories(
 );
 
 CREATE TABLE IF NOT EXISTS categories_treepaths(
-	anecestor_id UUID,
+	ancestor_id UUID,
 	descendant_id UUID,
-	PRIMARY KEY (anecestor_id, descendant_id),
-	FOREIGN KEY (anecestor_id) REFERENCES categories(id),
+	PRIMARY KEY (ancestor_id, descendant_id),
+	FOREIGN KEY (ancestor_id) REFERENCES categories(id),
 	FOREIGN KEY (descendant_id) REFERENCES categories(id)
 );
 
@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS products(
 CREATE TABLE IF NOT EXISTS products_categories(
 	products_id UUID,
 	categories_id UUID,
+	PRIMARY KEY (products_id, categories_id),
 	FOREIGN KEY (products_id) REFERENCES products(id),
 	FOREIGN KEY (categories_id) REFERENCES categories(id)
 );

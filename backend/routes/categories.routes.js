@@ -1,9 +1,10 @@
 import express from 'express';
-import { create, read, update, remove } from '../controllers/categories.controller.js';
+import { read, update, remove, createCategoryRelation, createCategory } from '../controllers/categories.controller.js';
 const router = express.Router();
 
 router.get('/', read)
-router.post('/', create)
+router.post('/', createCategory)
+router.post('/set/relations', createCategoryRelation)
 router.put('/', update)
 router.delete('/', remove)
 

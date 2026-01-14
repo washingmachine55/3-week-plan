@@ -70,3 +70,37 @@
 	}
 }
 ```
+
+# create new category
+```json
+{
+	"name": "Foldable"
+}
+```
+
+# create new sale and add its product prices 
+```json
+{
+	"sale_info": {
+		"stores_id": "019bbcee-a96c-7b4f-a0f9-e83e9003b244",
+		"total": "2499.59"
+	},
+	"sale_details": [
+		{
+			"products_price_id": "019bbcee-2bd3-7879-9bd3-fe0a9bae64b9"
+		},
+		{
+			"products_price_id": "019bbcf2-d528-7050-af09-3ffac0224a21"
+		}
+	]
+}
+```
+
+# create new employee
+```json
+{
+	"employee_info": {
+		"name": "mama"
+	}
+}
+```

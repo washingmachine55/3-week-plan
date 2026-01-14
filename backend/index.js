@@ -30,6 +30,9 @@ app.use("/products", productsRoutes)
 import storesRoutes from "./routes/stores.routes.js"
 app.use("/stores", storesRoutes)
 
+import salesRoutes from "./routes/sales.routes.js"
+app.use("/sales", salesRoutes)
+
 import employeesRoutes from "./routes/employees.routes.js"
 app.use("/employees", employeesRoutes)
 
