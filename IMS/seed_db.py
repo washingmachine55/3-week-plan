@@ -9,7 +9,8 @@ from dotenv import dotenv_values
 from datetime import date, timedelta
 
 fake = Faker()
-config = dotenv_values("../../.env")
+# config = dotenv_values("../.env")
+config = dotenv_values(".env")
 
 conn = psycopg2.connect(
     host=config["APP_HOST"],
@@ -103,8 +104,8 @@ for _ in range(STORES):
     ), True)
 
     store_ids.append(
-        q("INSERT INTO stores (addresses_id) VALUES (%s) RETURNING id",
-        (addr,), True)
+        q("INSERT INTO stores (addresses_id,name) VALUES (%s,%s) RETURNING id",
+        (addr,fake.company()), True)
     )
 
 for store in store_ids:

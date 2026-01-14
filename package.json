@@ -9,7 +9,10 @@
 		"secure-dev-debug": "HTTPS=true DEBUG=coordinate-test:* nodemon server.js",
 		"dev-node-debug": "node --watch server.js --env-file=.env -trace-sync-io",
 		"format": "prettier --write .",
-		"format:check": "prettier --check ."
+		"format:check": "prettier --check .",
+		"migrate:fresh": "./IMS/venv/bin/python ./IMS/migrations.py",
+		"migrate:truncate": "./IMS/venv/bin/python ./IMS/truncate-all-tables.py",
+		"migrate:seed": "./IMS/venv/bin/python ./IMS/seed_db.py"
 	},
 	"keywords": [],
 	"author": "",
