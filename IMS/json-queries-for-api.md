@@ -104,3 +104,20 @@
 	}
 }
 ```
+
+# create new inventory transaction
+```json
+{
+	"inventories_info": {
+		"stores_id": "019bbe9e-3377-7aba-9060-2f136e50b1aa",
+		"products_id": "019bbcf2-d501-7a4a-9da7-094048ccd325",
+		"sales_id": null,
+		"returns_id": null,
+		"reason": 13,
+		"timestamp": "2025-01-15T06:15:00.123456Z",
+		"qty_change": "Y",
+		"employees_id": null,
+		"customers_id": null
+	}
+}
+```

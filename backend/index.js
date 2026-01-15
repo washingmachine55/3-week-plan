@@ -19,9 +19,9 @@ app.listen(port, () => {
 	console.log(`${env.APP_NAME} listening on port ${port}`)
 })
 
-app.get('/', (req, res) => {
-	res.send(`Hello from the ${env.APP_NAME}!`)
-})
+// app.get('/', (req, res) => {
+// 	res.send(`Hello from the ${env.APP_NAME}!`)
+// })
 
 
 import productsRoutes from "./routes/products.routes.js"
@@ -39,8 +39,28 @@ app.use("/employees", employeesRoutes)
 import categoriesRoutes from "./routes/categories.routes.js"
 app.use("/categories", categoriesRoutes)
 
+import inventoriesRoutes from "./routes/inventories.routes.js"
+app.use("/inventories", inventoriesRoutes)
+
 import rbacRoutes from "./routes/rbac.routes.js"
 app.use("/rbac", rbacRoutes)
+
+app.get("/", (req, res) => {
+	res.json({
+		app_name: `${env.APP_NAME}`,
+		apis_available: {
+			stores: {
+				URL: "http://localhost:3000/stores",
+				used_for: "GET,POST,UPDATE,DELETE"
+			},
+			products: {
+				URL: "http://localhost:3000/products",
+				used_for: "GET,POST,UPDATE,DELETE",
+				optional: "Get request has optional query parameters such as field, sort, and limit"
+			},
+		}
+	});
+})
 
 
 

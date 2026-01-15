@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS stores_renovations(
 
 CREATE TABLE IF NOT EXISTS employees(
 	id UUID PRIMARY KEY NOT NULL DEFAULT uuidv7(),
-	name VARCHAR(25) NOT NULL,
+	name VARCHAR(35) NOT NULL,
 	date_hire DATE NOT NULL,
 	date_termination DATE NULL
 );
@@ -158,8 +158,10 @@ CREATE TABLE IF NOT EXISTS inventories_transactions(
 	reason VARCHAR(510) DEFAULT NULL,
 	timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	qty_change BOOLEAN NOT NULL,
-	employees_id UUID,
+	employees_id UUID DEFAULT NULL,
+	customers_id UUID DEFAULT NULL,
 	FOREIGN KEY (employees_id) REFERENCES employees(id),
+	FOREIGN KEY (customers_id) REFERENCES customers(id),
 	FOREIGN KEY (stores_id) REFERENCES stores(id),
 	FOREIGN KEY (products_id) REFERENCES products(id),
 	FOREIGN KEY (sales_id) REFERENCES sales(id),

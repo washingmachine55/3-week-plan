@@ -1,9 +1,10 @@
-import createNewEmployee from "../services/employees/createNew.employees.services.js"
-import patchSingle from "../services/updateSingle.services.js"
+import createNewInventoryTransaction from "../services/inventories/createNewTransaction.inventories.services.js"
+import patchSingle from "../services/updateSingle.services.js";
 
 export async function create(req, res) {
 	try {
-		const result = await createNewEmployee(req)
+		const result = await createNewInventoryTransaction(req);
+
 		res.json({
 			status: 200,
 			message: result
@@ -14,8 +15,11 @@ export async function create(req, res) {
 }
 export async function read(req, res) {
 	try {
+		const result = await __________(req);
+
 		res.json({
 			status: 200,
+			message: result
 		})
 	} catch (error) {
 		console.debug(error)
@@ -25,7 +29,7 @@ export async function update(req, res) {
 	try {
 		const result = await patchSingle(
 			req.params.id,
-			req.body.employees_info,
+			req.body.inventories_info,
 			"inventories_transactions"
 		);
 		res.json({

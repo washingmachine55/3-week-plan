@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/', read)
 router.post('/', validateEmployeesInput, create)
-router.put('/', update)
+router.patch('/:id', update)
 router.delete('/', remove)
 
 export default router;

@@ -88,15 +88,15 @@ export const StoreSchema = z.object({
 	name: z.string().min(4).max(55),
 	addresses_id: UUID,
 	timezone: z.string().length(3),
-	opening_hours: z.string(), // TIME → keep as string (HH:mm:ss)
-	closing_hours: z.string(),
+	opening_hours: z.iso.time(), // TIME → keep as string (HH:mm:ss)
+	closing_hours: z.iso.time(),
 });
 
 export const StoreRenovationSchema = z.object({
 	id: UUID,
 	stores_id: UUID,
 	date: z.iso.date(),
-	is_closed: z.boolean(),
+	is_closed: z.stringbool(),
 });
 
 /* =========================
@@ -176,6 +176,7 @@ export const InventoryTransactionSchema = z.object({
 	returns_id: UUID.nullable().optional(),
 	reason: z.string().max(510).nullable().optional(),
 	timestamp: z.iso.datetime(),
-	qty_change: z.boolean(),
-	employees_id: UUID,
+	qty_change: z.stringbool(),
+	employees_id: UUID.nullable().optional(),
+	customers_id: UUID.nullable().optional(),
 });
