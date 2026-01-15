@@ -1,11 +1,12 @@
 import express from 'express';
 import { createNewStore, read, update, remove } from '../controllers/stores.controller.js';
 import { validateStoresInput } from '../middlewares/stores.middleware.js';
+import { validateUuidUrlParam } from '../middlewares/parseUuids.middleware.js';
 const router = express.Router();
 
 router.get('/', read)
 router.post('/', validateStoresInput, createNewStore)
-router.put('/', update)
-router.delete('/', remove)
+router.patch('/:id', validateUuidUrlParam, update)
+router.delete('/:id', validateUuidUrlParam, remove)
 
 export default router;

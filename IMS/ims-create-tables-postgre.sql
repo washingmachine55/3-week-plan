@@ -14,8 +14,8 @@ CREATE TABLE IF NOT EXISTS roles_permissions(
 	id UUID PRIMARY KEY NOT NULL DEFAULT uuidv7(),
 	roles_id UUID,
 	permissions_id UUID,
-	FOREIGN KEY (roles_id) REFERENCES roles(id),
-	FOREIGN KEY (permissions_id) REFERENCES permissions(id)
+	FOREIGN KEY (roles_id) REFERENCES roles(id) ON DELETE CASCADE,
+	FOREIGN KEY (permissions_id) REFERENCES permissions(id) ON DELETE CASCADE,
 );
 
 CREATE TABLE IF NOT EXISTS categories(
@@ -36,7 +36,6 @@ CREATE TABLE IF NOT EXISTS products(
 	sku VARCHAR(12) UNIQUE NOT NULL,
 	name VARCHAR(255) NOT NULL,
 	description VARCHAR(1000) NULL,
-	status SMALLINT NOT NULL,
 	created_at DATE NOT NULL DEFAULT CURRENT_DATE,
 	archived_at DATE NULL DEFAULT NULL
 );
@@ -91,7 +90,8 @@ CREATE TABLE IF NOT EXISTS employees(
 	id UUID PRIMARY KEY NOT NULL DEFAULT uuidv7(),
 	name VARCHAR(35) NOT NULL,
 	date_hire DATE NOT NULL,
-	date_termination DATE NULL
+	date_termination DATE NULL,
+	archived_at DATE DEFAULT NULL
 );
 
 CREATE TABLE IF NOT EXISTS employees_roles(
@@ -110,7 +110,7 @@ CREATE TABLE IF NOT EXISTS customers(
 	last_name VARCHAR(35) NULL,
 	email VARCHAR(55) UNIQUE NOT NULL,
 	date_membership_start DATE NULL,
-	status SMALLINT NOT NULL
+	archived_at DATE NULL DEFAULT NULL
 );
 
 CREATE TABLE IF NOT EXISTS sales(
@@ -160,6 +160,7 @@ CREATE TABLE IF NOT EXISTS inventories_transactions(
 	qty_change BOOLEAN NOT NULL,
 	employees_id UUID DEFAULT NULL,
 	customers_id UUID DEFAULT NULL,
+	archived_at DATE NULL DEFAULT NULL,
 	FOREIGN KEY (employees_id) REFERENCES employees(id),
 	FOREIGN KEY (customers_id) REFERENCES customers(id),
 	FOREIGN KEY (stores_id) REFERENCES stores(id),

@@ -36,6 +36,7 @@ CUSTOMERS = 40
 PRODUCTS = 500
 SALES_PER_STORE = (80, 200)
 RETURN_RATE = 0.08
+BASE_START_DATE = date.today() - timedelta(days=900)  # ~2.5 years ago
 
 # ------------------------------------------------
 # ROLES & PERMISSIONS
@@ -152,15 +153,20 @@ for store in store_ids:
 # ------------------------------------------------
 customer_ids = []
 for _ in range(CUSTOMERS):
+    archived_at = fake.date_between(
+        start_date=BASE_START_DATE,
+        end_date=date.today() - timedelta(days=60)
+    )
     customer_ids.append(
         q("""
             INSERT INTO customers
-            (id, first_name, last_name, email, status)
-            VALUES (uuidv7(),%s,%s,%s,1) RETURNING id
+            (id, first_name, last_name, email, archived_at)
+            VALUES (uuidv7(),%s,%s,%s,%s) RETURNING id
         """, (
             fake.first_name(),
             fake.last_name(),
-            fake.unique.email()
+            fake.unique.email(),
+            archived_at
         ), True)
     )
 
@@ -171,7 +177,6 @@ product_ids = []
 price_ids = {}
 
 PRODUCT_TYPES = [' XS', ' S', ' M', ' L', ' XL', ' XXL', ' Luxury', ' Common', ' Limited Edition', ' Collectors Edition']
-BASE_START_DATE = date.today() - timedelta(days=900)  # ~2.5 years ago
 
 for _ in range(PRODUCTS):
     status = random.choices([1, 2], weights=[88, 12])[0]
@@ -185,13 +190,12 @@ for _ in range(PRODUCTS):
 
     pid = q("""
         INSERT INTO products
-        (sku, name, description, status, archived_at, created_at)
-        VALUES (%s,%s,%s,%s,%s,%s) RETURNING id
+        (sku, name, description, archived_at, created_at)
+        VALUES (%s,%s,%s,%s,%s) RETURNING id
     """, (
         fake.unique.bothify("SKU-####"),
         fake.domain_word().title() + random.choice(PRODUCT_TYPES),
         fake.sentence(),
-        status,
         archived_at,
         fake.date_between(BASE_START_DATE, date.today())
     ), True)
@@ -259,8 +263,8 @@ for _ in range(PRODUCTS):
 # for _ in range(PRODUCTS):
     pid = q("""
         INSERT INTO products
-        (sku, name, description, status)
-        VALUES (%s,%s,%s,1) RETURNING id
+        (sku, name, description)
+        VALUES (%s,%s,%s) RETURNING id
     """, (
         fake.unique.bothify("SKU-####"),
         fake.domain_word().title() + random.choice(PRODUCT_TYPES),
