@@ -96,9 +96,9 @@ CREATE TABLE IF NOT EXISTS employees(
 
 CREATE TABLE IF NOT EXISTS employees_roles(
 	id UUID PRIMARY KEY NOT NULL DEFAULT uuidv7(),
-	store_id UUID,
-	employee_id UUID,
-	role_id UUID,
+	stores_id UUID,
+	employees_id UUID,
+	roled_id UUID,
 	FOREIGN KEY (store_id) REFERENCES stores(id),
 	FOREIGN KEY (employee_id) REFERENCES employees(id),
 	FOREIGN KEY (role_id) REFERENCES roles(id)

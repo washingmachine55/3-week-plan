@@ -1,6 +1,7 @@
 import createNewInventoryTransaction from "../services/inventories/createNewTransaction.inventories.services.js"
 import patchSingle from "../services/updateSingle.services.js";
 import softDeleteSingle from "../services/archiveSingle.services.js"
+import getAll from "../services/getAll.services.js";
 
 
 export async function create(req, res) {
@@ -17,7 +18,7 @@ export async function create(req, res) {
 }
 export async function read(req, res) {
 	try {
-		const result = await __________(req);
+		const result = await getAll(req);
 
 		res.json({
 			status: 200,

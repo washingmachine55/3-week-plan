@@ -18,9 +18,9 @@ export async function createNewStore(req, res) {
 	}
 }
 export async function read(req, res) {
+	const client = await pool.connect()
 	try {
-		const queryResult = await pool.query('SELECT * FROM stores')
-
+		const queryResult = await client.query('SELECT * FROM stores')
 		res.json({
 			status: 200,
 			message: queryResult.rows,
@@ -28,7 +28,7 @@ export async function read(req, res) {
 	} catch (error) {
 		console.debug(error)
 	} finally {
-		await pool.end()
+		client.release()
 	}
 }
 export async function update(req, res) {

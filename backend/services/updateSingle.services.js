@@ -1,5 +1,11 @@
 import pool from "../config/db.js";
-
+/**
+ * 
+ * @param {String} id - UUID from the req.param.id
+ * @param {Object} bodyKey - Object to iterate over, such as req.body.employees_info
+ * @param {String} tableName Table name to save into, such as employees
+ * @returns Returning rows from UPDATE statement
+ */
 export default async function patchSingle(id, bodyKey, tableName) {
 
 	const entryToDelete = id;

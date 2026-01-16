@@ -1,0 +1,96 @@
+
+
+curl --request DELETE \
+  --url http://localhost:3000/categories/:id
+
+curl --request DELETE \
+  --url http://localhost:3000/employees/:id
+
+curl --request DELETE \
+  --url http://localhost:3000/inventories/:id
+
+curl --request DELETE \
+  --url http://localhost:3000/products/:id
+
+curl --request DELETE \
+  --url http://localhost:3000/rbac/:id
+
+curl --request DELETE \
+  --url http://localhost:3000/sales/:id
+
+curl --request DELETE \
+  --url http://localhost:3000/stores/:id
+
+
+
+
+
+curl --request PATCH \  
+  --url http://localhost:3000/categories/:id
+
+curl --request PATCH \  
+  --url http://localhost:3000/employees/:id
+
+curl --request PATCH \  
+  --url http://localhost:3000/inventories/:id
+
+curl --request PATCH \  
+  --url http://localhost:3000/products/:id
+
+curl --request PATCH \  
+  --url http://localhost:3000/rbac/:id
+
+curl --request PATCH \  
+  --url http://localhost:3000/sales/:id
+
+curl --request PATCH \  
+  --url http://localhost:3000/stores/:id
+
+
+
+
+
+
+curl --request POST \
+  --url http://localhost:3000/categories/set/relations
+
+curl --request POST \
+  --url http://localhost:3000/employees
+
+curl --request POST \
+  --url http://localhost:3000/inventories
+
+curl --request POST \
+  --url http://localhost:3000/products
+
+curl --request POST \
+  --url http://localhost:3000/rbac/roles
+
+curl --request POST \
+  --url http://localhost:3000/rbac/permissions
+
+curl --request POST \
+  --url http://localhost:3000/sales
+
+curl --request POST \
+  --url http://localhost:3000/stores
+
+
+
+
+curl --request GET \
+  --url http://localhost:3000/
+curl --request GET \
+  --url http://localhost:3000/categories
+curl --request GET \
+  --url http://localhost:3000/employees
+curl --request GET \
+  --url http://localhost:3000/inventories
+curl --request GET \
+  --url http://localhost:3000/products
+curl --request GET \
+  --url http://localhost:3000/rbac
+curl --request GET \
+  --url http://localhost:3000/sales
+curl --request GET \
+  --url http://localhost:3000/stores

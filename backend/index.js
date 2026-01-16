@@ -15,15 +15,6 @@ app.use(cors({
 
 app.set('query parser', 'simple')
 
-app.listen(port, () => {
-	console.log(`${env.APP_NAME} listening on port ${port}`)
-})
-
-// app.get('/', (req, res) => {
-// 	res.send(`Hello from the ${env.APP_NAME}!`)
-// })
-
-
 import productsRoutes from "./routes/products.routes.js"
 app.use("/products", productsRoutes)
 
@@ -58,9 +49,23 @@ app.get("/", (req, res) => {
 				used_for: "GET,POST,UPDATE,DELETE",
 				optional: "Get request has optional query parameters such as field, sort, and limit"
 			},
+		},
+		url_query_parameter_defaults: {
+			limit: '10',
+			orderby: 'id',
+			offset: '0',
+			sort: 'ASC' 
 		}
 	});
 })
 
+app.use((req, res) => {
+	res.status(404).json({
+		status: 404,
+		message: 'Page not found. Use the default root endpoint for a guide on available APIs.',
+	});
+});
 
-
+app.listen(port, () => {
+	console.log(`${env.APP_NAME} listening on port ${port}`)
+})
